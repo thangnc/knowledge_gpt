@@ -16,7 +16,7 @@ from knowledge_gpt.utils import (
     wrap_text_in_html, get_answer_with_full_source,
 )
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 st.session_state["api_key_configured"] = True
 set_openai_api_key(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -90,7 +90,7 @@ if button or st.session_state.get("submit"):
             with answer_col:
                 st.markdown("#### Answer")
                 # st.markdown(answer["output_text"].split("SOURCES: ")[0])
-                st.markdown(answer.split("SOURCES: ")[0])
+                st.markdown(answer)
 
             with sources_col:
                 st.markdown("#### Sources")
@@ -98,7 +98,6 @@ if button or st.session_state.get("submit"):
                 #     st.markdown(source.page_content)
                 #     st.markdown(source.metadata["source"])
                 #     st.markdown("---")
-                st.markdown(answer.split("SOURCES: ")[1])
 
         except OpenAIError as e:
             st.error(e.message)
