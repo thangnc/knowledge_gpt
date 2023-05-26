@@ -13,6 +13,7 @@ from langchain.vectorstores.faiss import FAISS
 from openai.error import AuthenticationError
 from pypdf import PdfReader
 
+from knowledge_gpt.chats import OpenAIChats
 from knowledge_gpt.embeddings import OpenAIEmbeddings
 from knowledge_gpt.prompts import STUFF_PROMPT
 
@@ -135,6 +136,25 @@ def get_answer(docs: List[Document], query: str) -> Dict[str, Any]:
         {"input_documents": docs, "question": query}, return_only_outputs=True
     )
     return answer
+
+
+@st.cache(allow_output_mutation=True)
+def get_answer_with_full_source(docs: str, question: str):
+    if not st.session_state.get("OPENAI_API_KEY"):
+        raise AuthenticationError(
+            "Enter your OpenAI API key in the sidebar. You can get a key at"
+            " https://platform.openai.com/account/api-keys."
+        )
+    else:
+        chats = OpenAIChats(
+            openai_api_key=st.session_state.get("OPENAI_API_KEY")
+        )
+
+        print(docs)
+
+        response = chats.send_chat_message(docs=docs, question=question)
+
+        return response
 
 
 @st.cache(allow_output_mutation=True)

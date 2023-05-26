@@ -4,6 +4,9 @@ data/local_data/
 # Secrets
 .streamlit/secrets.toml
 
+# Pycham
+.idea/
+
 # VSCode
 .vscode/
 

@@ -1,7 +1,9 @@
+import os
+
 import streamlit as st
 from openai.error import OpenAIError
 
-from knowledge_gpt.components.sidebar import sidebar
+from knowledge_gpt.components.sidebar import sidebar, set_openai_api_key
 from knowledge_gpt.utils import (
     embed_docs,
     get_answer,
@@ -11,16 +13,20 @@ from knowledge_gpt.utils import (
     parse_txt,
     search_docs,
     text_to_docs,
-    wrap_text_in_html,
+    wrap_text_in_html, get_answer_with_full_source,
 )
+
+os.environ['OPENAI_API_KEY'] = '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'
+st.session_state["api_key_configured"] = True
+set_openai_api_key(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def clear_submit():
     st.session_state["submit"] = False
 
 
-st.set_page_config(page_title="KnowledgeGPT", page_icon="📖", layout="wide")
-st.header("📖KnowledgeGPT")
+st.set_page_config(page_title="Docs based GPT", page_icon="📖", layout="wide")
+st.header("📖 Docs based GPT")
 
 sidebar()
 
@@ -46,9 +52,9 @@ if uploaded_file is not None:
     try:
         with st.spinner("Indexing document... This may take a while⏳"):
             index = embed_docs(text)
-        st.session_state["api_key_configured"] = True
+        # st.session_state["api_key_configured"] = True
     except OpenAIError as e:
-        st.error(e._message)
+        st.error(e.message)
 
 query = st.text_area("Ask a question about the document", on_change=clear_submit)
 with st.expander("Advanced Options"):
@@ -72,24 +78,27 @@ if button or st.session_state.get("submit"):
         st.session_state["submit"] = True
         # Output Columns
         answer_col, sources_col = st.columns(2)
-        sources = search_docs(index, query)
+        # sources = search_docs(index, query)
 
         try:
-            answer = get_answer(sources, query)
-            if not show_all_chunks:
-                # Get the sources for the answer
-                sources = get_sources(answer, sources)
+            # answer = get_answer(sources, query)
+            answer = get_answer_with_full_source(docs=' '.join(doc), question=query)
+            # if not show_all_chunks:
+            #     # Get the sources for the answer
+            #     sources = get_sources(answer, sources)
 
             with answer_col:
                 st.markdown("#### Answer")
-                st.markdown(answer["output_text"].split("SOURCES: ")[0])
+                # st.markdown(answer["output_text"].split("SOURCES: ")[0])
+                st.markdown(answer.split("SOURCES: ")[0])
 
             with sources_col:
                 st.markdown("#### Sources")
-                for source in sources:
-                    st.markdown(source.page_content)
-                    st.markdown(source.metadata["source"])
-                    st.markdown("---")
+                # for source in sources:
+                #     st.markdown(source.page_content)
+                #     st.markdown(source.metadata["source"])
+                #     st.markdown("---")
+                st.markdown(answer.split("SOURCES: ")[1])
 
         except OpenAIError as e:
-            st.error(e._message)
+            st.error(e.message)
