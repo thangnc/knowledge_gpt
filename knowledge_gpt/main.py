@@ -17,7 +17,7 @@
 #     wrap_text_in_html, get_answer_with_full_source,
 # )
 #
-# os.environ['OPENAI_API_KEY'] = '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'
+# os.environ['OPENAI_API_KEY'] = 'sk-'
 # st.session_state["api_key_configured"] = True
 # set_openai_api_key(api_key=os.getenv("OPENAI_API_KEY"))
 #

@@ -8,7 +8,7 @@ from knowledge_gpt.utils import get_answer_with_full_source, wrap_text_in_html, 
 
 st.set_page_config(page_title="Docs based GPT", page_icon="📖", layout="wide")
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = 'sk-'
 st.session_state["api_key_configured"] = True
 st.session_state["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
